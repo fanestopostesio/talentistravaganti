@@ -1,4 +1,4 @@
-FROM vm/ubuntu:18.04
+FROM vm/ubuntu:22.04
 
 # install the latest version of Docker, as in the official Docker installation tutorial.
 RUN apt-get update && \
@@ -14,7 +14,7 @@ RUN apt-get update && \
 RUN sudo apt-get install postgresql-client-common
 RUN sudo apt-get install postgresql-client
 # Install node
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash && \
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash && \
     apt install nodejs && \
     rm -f /etc/apt/sources.list.d/nodesource.list
 RUN npm install -g http-server

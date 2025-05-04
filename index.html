@@ -121,8 +121,11 @@
         qrText => {
           html5QrCode.stop();
           const data = parseQRData(qrText);
+          console.log(data);
+          const resultBox = document.getElementById("result");
           if (!data || !data.title || !data.num || !data.sheetNum) {
-            document.getElementById("result").textContent = "❌ QRCode non valido";
+            resultBox.textContent = "❌ QRCode non valido";
+            resultBox.className = 'error';
             return;
           }
           validateTicket(data).then(() => {
@@ -132,7 +135,6 @@
         },
         err => {
           // Ignored scan errors
-          //document.getElementById("result").textContent = "❌ Impossibile scansionare il QRCode";
         }
       );
     }

@@ -48,7 +48,7 @@
       }
     }
 
-    async function validateTicket({ title, num, sheetName, expDate }) {
+    async function validateTicket({ title, num, sheetName, when }) {
       const resultBox = document.getElementById("result");
       resultBox.className = '';
       resultBox.textContent = "🔄 Checking ticket...";
@@ -97,7 +97,7 @@
 
         // Compare event dates
         if (eventDate !== expDate) {
-          resultBox.textContent = `❌ Data spettacolo non corrispondente (attesa ${expDate}, trovata ${eventDate})`;
+          resultBox.textContent = `❌ Data spettacolo non corrispondente (attesa ${when}, trovata ${eventDate})`;
           resultBox.className = 'error';
           return;
         }

@@ -124,8 +124,8 @@
             return;
           }
           validateTicket(data).then(() => {
-            // Wait for user click to start scanning again
-            document.body.addEventListener('click', restartScanner);
+            // Restart scanning after a delay
+            setTimeout(() => startScanner(), 1000);
           });
         },
         err => {
@@ -133,11 +133,6 @@
           //document.getElementById("result").textContent = "❌ Impossibile scansionare il QRCode";
         }
       );
-    }
-
-    function restartScanner() {
-      document.body.removeEventListener('click', restartScanner);
-      startScanner();  // Restart scanner when user clicks
     }
 
     window.onload = startScanner;

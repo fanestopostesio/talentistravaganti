@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Theater Ticket Validator</title>
+  <title>Controllo Biglietti Stravaganti</title>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
     body {
@@ -51,7 +51,7 @@
     async function validateTicket({ title, num, sheetName, when }) {
       const resultBox = document.getElementById("result");
       resultBox.className = '';
-      resultBox.textContent = "🔄 Checking ticket...";
+      resultBox.textContent = "🔄 Controllo in corso...";
 
       try {
         const formData = new URLSearchParams({ title, num, sheetName });

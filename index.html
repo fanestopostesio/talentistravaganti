@@ -2,43 +2,150 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Convalida Biglietto</title>
-  <script src="https://unpkg.com/html5-qrcode"></script>
+  <title>Theater Ticket Validator</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    #reader {
+      width: 300px;
+      margin: 0 auto;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 1.2em;
+      padding: 1em;
+      background: #fff;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
 </head>
 <body>
-  <h1>Inquadra QR Code</h1>
+  <h1>🎟️ Ticket Validator</h1>
   <div id="reader" style="width: 300px;"></div>
-  <p id="result"></p>
+  <div id="result"></div>
 
   <script>
-    function validateTicket(ticketId) {
-      fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `ticket_id=${encodeURIComponent(ticketId)}`
-      })
-      .then(response => response.json())
-      .then(data => {
-        const message = data.valid
-          ? `✅ Valid ticket: ${data.name}`
-          : `❌ ${data.message}`;
-        document.getElementById('result').innerText = message;
-      })
-      .catch(() => {
-        document.getElementById('result').innerText = 'Error validating ticket.';
-      });
+    const scriptUrl = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; // <-- Replace this with your script URL
+
+    function parseQRData(qrText) {
+      try {
+        // Parse the QR code's JSON string
+        const data = JSON.parse(qrText);
+        return data;
+      } catch (e) {
+        // Return null if JSON parsing fails
+        return null;
+      }
     }
 
-    new Html5Qrcode("reader").start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: 250 },
-      qrCodeMessage => {
-        validateTicket(qrCodeMessage);
-      },
-      errorMessage => {
-        // optional: show scanning errors
+    async function validateTicket({ title, num, when }) {
+      const resultBox = document.getElementById("result");
+      resultBox.className = '';
+      resultBox.textContent = "🔄 Checking ticket...";
+
+      try {
+        const formData = new URLSearchParams({ title, num });
+        const response = await fetch(scriptUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: formData.toString()
+        });
+
+        const json = await response.json();
+
+        if (!json.success) {
+          resultBox.textContent = `❌ Error: ${json.message}`;
+          resultBox.className = 'error';
+          return;
+        }
+
+        const data = json.data;
+
+        const ticketSent = data["ticket_sent"];
+        const payment = (data["payment"] || "").toString().toLowerCase();
+        const paymentMethod = (data["payment_method"] || "").toString();
+        const numberField = parseInt(data["number"], 10);
+        const name = data["name"];
+        const eventDate = data['when'];
+        const seats = data['seats'];
+
+        if (!ticketSent) {
+          resultBox.textContent = `❌ Questo Biglietto non &egrave; stato inviato`;
+          resultBox.className = 'error';
+          return;
+        }
+
+        if (!paymentMethod && payment !== "omaggio") {
+          resultBox.textContent = `❌ Pagamento mancante`;
+          resultBox.className = 'error';
+          return;
+        }
+
+        if (numberField !== parseInt(num, 10)) {
+          resultBox.textContent = `❌ Numero biglietto non corrispondente`;
+          resultBox.className = 'error';
+          return;
+        }
+
+        // Compare event dates
+        if (eventDate !== when) {
+          resultBox.textContent = `❌ Data spettacolo non corrispondente (attesa ${eventDate}, trovata ${when})`;
+          resultBox.className = 'error';
+          return;
+        }
+
+        resultBox.textContent = `✅ Biglietto Valido\n👤 Nome: ${name}, Posti: ${seats}`;
+        resultBox.className = 'success';
+
+      } catch (err) {
+        resultBox.textContent = `❌ Errore di validazione: ${err.message}`;
+        resultBox.className = 'error';
       }
-    );
+    }
+
+    function startScanner() {
+      const html5QrCode = new Html5Qrcode("reader");
+      html5QrCode.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          qrbox: 250
+        },
+        qrText => {
+          html5QrCode.stop();
+          const data = parseQRData(qrText);
+          if (!data || !data.title || !data.num || !data.when) {
+            document.getElementById("result").textContent = "❌ QRCode non valido";
+            return;
+          }
+          validateTicket(data).then(() => {
+            // Wait for user click to start scanning again
+            document.body.addEventListener('click', restartScanner);
+          });
+        },
+        err => {
+          // Ignored scan errors
+          //document.getElementById("result").textContent = "❌ Impossibile scansionare il QRCode";
+        }
+      );
+    }
+
+    function restartScanner() {
+      document.body.removeEventListener('click', restartScanner);
+      startScanner();  // Restart scanner when user clicks
+    }
+
+    window.onload = startScanner;
   </script>
 </body>
 </html>

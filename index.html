@@ -96,7 +96,7 @@
         }
 
         // Compare event dates
-        if (eventDate !== expDate) {
+        if (eventDate !== when) {
           resultBox.textContent = `❌ Data spettacolo non corrispondente (attesa ${when}, trovata ${eventDate})`;
           resultBox.className = 'error';
           return;

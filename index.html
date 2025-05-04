@@ -62,7 +62,8 @@
           body: formData.toString()
         });
 
-        const json = await response.json();
+        let json = await response.json();
+        json = JSON.parse(json);
         console.log(json);
 
         if (!json.success) {

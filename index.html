@@ -64,7 +64,7 @@
         const json = await response.json();
 
         if (!json.success) {
-          resultBox.textContent = `❌ Error: ${json.message}`;
+          resultBox.textContent = `❌ Errore: ${json.message}`;
           resultBox.className = 'error';
           return;
         }
@@ -79,14 +79,8 @@
         const eventDate = data['when'];
         const seats = data['seats'];
 
-        if (!ticketSent) {
-          resultBox.textContent = `❌ Questo Biglietto non &egrave; stato inviato`;
-          resultBox.className = 'error';
-          return;
-        }
-
-        if (!paymentMethod && payment !== "omaggio") {
-          resultBox.textContent = `❌ Pagamento mancante`;
+        if (!ticketSent && payment !== "omaggio") {
+          resultBox.textContent = `❌ Questo Biglietto non &egrave; stato inviato. Verificare pagamento.`;
           resultBox.className = 'error';
           return;
         }

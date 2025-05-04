@@ -82,6 +82,7 @@
         const name = data["name"];
         const eventDate = data['when'];
         const seats = data['seats'];
+        const used = data['used'];
 
         if (!ticketSent && payment !== "omaggio") {
           resultBox.textContent = `❌ Questo Biglietto non &egrave; stato inviato. Verificare pagamento.`;
@@ -98,6 +99,12 @@
         // Compare event dates
         if (eventDate !== when) {
           resultBox.textContent = `❌ Data spettacolo non corrispondente (attesa ${when}, trovata ${eventDate})`;
+          resultBox.className = 'error';
+          return;
+        }
+
+        if (used) {
+          resultBox.textContent = `❌ Biglietto gi&agrave; controllato\n👤 Nome: ${name}, Posti: ${seats}`;
           resultBox.className = 'error';
           return;
         }

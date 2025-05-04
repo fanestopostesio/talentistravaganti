@@ -37,17 +37,6 @@
   <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbzPJCCsg23lOeYT6Jw9vYSG8N7TDwNU-rqDkjAnYrB-sD2FNylCNG3BY1Uj_NfbNkRW/exec";
 
-    function parseQRData(qrText) {
-      try {
-        // Parse the QR code's JSON string
-        const data = JSON.parse(qrText);
-        return data;
-      } catch (e) {
-        // Return null if JSON parsing fails
-        return null;
-      }
-    }
-
     async function validateTicket({ uuid, sheetName }) {
       const resultBox = document.getElementById("result");
       resultBox.className = '';
@@ -122,8 +111,8 @@
         },
         qrText => {
           html5QrCode.stop();
-          const data = parseQRData(qrText);
-          console.log(data);
+          const data = JSON.parse(qrText);
+          console.log(qrText);
           const resultBox = document.getElementById("result");
           if (!data || !data.title || !data.uuid || !data.sheetName) {
             resultBox.textContent = "❌ QRCode non valido";

@@ -48,13 +48,13 @@
       }
     }
 
-    async function validateTicket({ title, num, sheetName, when }) {
+    async function validateTicket({ uuid, sheetName }) {
       const resultBox = document.getElementById("result");
       resultBox.className = '';
       resultBox.textContent = "🔄 Controllo in corso...";
 
       try {
-        const formData = new URLSearchParams({ title, num, sheetName });
+        const formData = new URLSearchParams({ uuid, sheetName });
         console.log(formData.toString());
         const response = await fetch(scriptUrl, {
           method: "POST",
@@ -75,6 +75,7 @@
         const data = json.data;
         console.log(data);
 
+        const title = data['title'];
         const ticketSent = data["ticket_sent"];
         const payment = (data["payment"] || "").toString().toLowerCase();
         const paymentMethod = (data["payment_method"] || "").toString();
@@ -97,12 +98,12 @@
         }
 
         if (used) {
-          resultBox.textContent = `❌ Biglietto già controllato\n👤 Nome: ${name}, Posti: ${seats}, Spettacolo: ${title}, Data: ${when}`;
+          resultBox.textContent = `❌ Biglietto già controllato\n👤 Nome: ${name}, Posti: ${seats}, Spettacolo: ${title}, Data: ${eventDate}`;
           resultBox.className = 'error';
           return;
         }
 
-        resultBox.textContent = `✅ Biglietto Valido\n👤 Nome: ${name}, Posti: ${seats}, Spettacolo: ${title}, Data: ${when}`;
+        resultBox.textContent = `✅ Biglietto Valido\n👤 Nome: ${name}, Posti: ${seats}, Spettacolo: ${title}, Data: ${eventDate}`;
         resultBox.className = 'success';
 
       } catch (err) {

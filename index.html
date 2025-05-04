@@ -48,7 +48,7 @@
       }
     }
 
-    async function validateTicket({ title, num, when }) {
+    async function validateTicket({ title, num, sheetName }) {
       const resultBox = document.getElementById("result");
       resultBox.className = '';
       resultBox.textContent = "🔄 Checking ticket...";
@@ -121,7 +121,7 @@
         qrText => {
           html5QrCode.stop();
           const data = parseQRData(qrText);
-          if (!data || !data.title || !data.num || !data.when) {
+          if (!data || !data.title || !data.num || !data.sheetNum) {
             document.getElementById("result").textContent = "❌ QRCode non valido";
             return;
           }

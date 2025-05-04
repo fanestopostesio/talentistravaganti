@@ -85,7 +85,7 @@
         const used = data['used'];
 
         if (!ticketSent && payment !== "omaggio") {
-          resultBox.textContent = `❌ Questo Biglietto non &egrave; stato inviato. Verificare pagamento.`;
+          resultBox.textContent = `❌ Questo Biglietto non è stato inviato. Verificare pagamento.`;
           resultBox.className = 'error';
           return;
         }
@@ -104,7 +104,7 @@
         }
 
         if (used) {
-          resultBox.textContent = `❌ Biglietto gi&agrave; controllato\n👤 Nome: ${name}, Posti: ${seats}`;
+          resultBox.textContent = `❌ Biglietto già controllato\n👤 Nome: ${name}, Posti: ${seats}`;
           resultBox.className = 'error';
           return;
         }

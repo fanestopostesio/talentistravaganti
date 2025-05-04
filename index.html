@@ -54,7 +54,7 @@
       resultBox.textContent = "🔄 Checking ticket...";
 
       try {
-        const formData = new URLSearchParams({ title, num });
+        const formData = new URLSearchParams({ title, num, sheetName });
         console.log(formData.toString());
         const response = await fetch(scriptUrl, {
           redirect: "follow",

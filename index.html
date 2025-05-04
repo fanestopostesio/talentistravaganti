@@ -48,7 +48,7 @@
       }
     }
 
-    async function validateTicket({ title, num, sheetName }) {
+    async function validateTicket({ title, num, sheetName, expDate }) {
       const resultBox = document.getElementById("result");
       resultBox.className = '';
       resultBox.textContent = "🔄 Checking ticket...";
@@ -96,8 +96,8 @@
         }
 
         // Compare event dates
-        if (eventDate !== when) {
-          resultBox.textContent = `❌ Data spettacolo non corrispondente (attesa ${eventDate}, trovata ${when})`;
+        if (eventDate !== expDate) {
+          resultBox.textContent = `❌ Data spettacolo non corrispondente (attesa ${expDate}, trovata ${eventDate})`;
           resultBox.className = 'error';
           return;
         }
@@ -124,7 +124,7 @@
           const data = parseQRData(qrText);
           console.log(data);
           const resultBox = document.getElementById("result");
-          if (!data || !data.title || !data.num || !data.sheetName) {
+          if (!data || !data.title || !data.num || !data.sheetName || !data.when ) {
             resultBox.textContent = "❌ QRCode non valido";
             resultBox.className = 'error';
             setTimeout(() => startScanner(), 1000);

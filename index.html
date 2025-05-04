@@ -84,32 +84,25 @@
         const seats = data['seats'];
         const used = data['used'];
 
+        if (eventDate == null) {
+          resultBox.textContent = `❌ Biglietto non valido!`;
+          resultBox.className = 'error';
+          return;
+        }
+
         if (!ticketSent && payment !== "omaggio") {
-          resultBox.textContent = `❌ Questo Biglietto non è stato inviato. Verificare pagamento.`;
-          resultBox.className = 'error';
-          return;
-        }
-
-        if (numberField !== parseInt(num, 10)) {
-          resultBox.textContent = `❌ Numero biglietto non corrispondente`;
-          resultBox.className = 'error';
-          return;
-        }
-
-        // Compare event dates
-        if (eventDate !== when) {
-          resultBox.textContent = `❌ Data spettacolo non corrispondente (attesa ${when}, trovata ${eventDate})`;
+          resultBox.textContent = `❌ Verificare pagamento.`;
           resultBox.className = 'error';
           return;
         }
 
         if (used) {
-          resultBox.textContent = `❌ Biglietto già controllato\n👤 Nome: ${name}, Posti: ${seats}`;
+          resultBox.textContent = `❌ Biglietto già controllato\n👤 Nome: ${name}, Posti: ${seats}, Spettacolo: ${title}, Data: ${when}`;
           resultBox.className = 'error';
           return;
         }
 
-        resultBox.textContent = `✅ Biglietto Valido\n👤 Nome: ${name}, Posti: ${seats}`;
+        resultBox.textContent = `✅ Biglietto Valido\n👤 Nome: ${name}, Posti: ${seats}, Spettacolo: ${title}, Data: ${when}`;
         resultBox.className = 'success';
 
       } catch (err) {

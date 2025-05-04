@@ -126,6 +126,7 @@
           if (!data || !data.title || !data.num || !data.sheetName) {
             resultBox.textContent = "❌ QRCode non valido";
             resultBox.className = 'error';
+            setTimeout(() => startScanner(), 1000);
             return;
           }
           validateTicket(data).then(() => {

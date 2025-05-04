@@ -55,7 +55,7 @@
 
       try {
         const formData = new URLSearchParams({ title, num });
-        console.log(formData);
+        console.log(formData.toString());
         const response = await fetch(scriptUrl, {
           redirect: "follow",
           method: "POST",

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Convalida Biglietto</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+  <h1>Inquadra QR Code</h1>
+  <div id="reader" style="width: 300px;"></div>
+  <p id="result"></p>
+
+  <script>
+    function validateTicket(ticketId) {
+      fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `ticket_id=${encodeURIComponent(ticketId)}`
+      })
+      .then(response => response.json())
+      .then(data => {
+        const message = data.valid
+          ? `✅ Valid ticket: ${data.name}`
+          : `❌ ${data.message}`;
+        document.getElementById('result').innerText = message;
+      })
+      .catch(() => {
+        document.getElementById('result').innerText = 'Error validating ticket.';
+      });
+    }
+
+    new Html5Qrcode("reader").start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      qrCodeMessage => {
+        validateTicket(qrCodeMessage);
+      },
+      errorMessage => {
+        // optional: show scanning errors
+      }
+    );
+  </script>
+</body>
+</html>
